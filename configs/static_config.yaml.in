@@ -33,7 +33,7 @@ components_manager:
                     overflow_behavior: discard  # Drop logs if the system is too busy to write them down.
 
         tracer:                              # Component that helps to trace execution times and requests in logs.
-            service-name: pg_service_template   # "You know. You all know exactly who I am. Say my name. " (c)
+            service-name: portfolio   # "You know. You all know exactly who I am. Say my name. " (c)
 
         dynamic-config:                      # Dynamic config storage options, do nothing
             fs-cache-path: ''
@@ -57,16 +57,25 @@ components_manager:
             throttling_enabled: false
             url_trailing_slash: strict-match
 
-        handler-hello:                    # Finally! Our handler.
-            path: /v1/hello               # Registering handler by URL '/v1/hello'.
-            method: POST                  # It will only reply to POST requests.
-            task_processor: main-task-processor  # Run it on CPU bound task processor
+        handler-user-register:
+            path: /user/register               		# Registering handler by URL '/user/register'.
+            method: POST                  			# It will only reply to POST requests.
+            task_processor: main-task-processor  	# Run it on CPU bound task processor
 
-        postgres-db-1:
+        handler-user-login:
+        	path: /user/login
+        	method: POST
+        	task_processor: main-task-processor
+
+        portfolio-db:
             dbconnection: $dbconnection
             blocking_task_processor: fs-task-processor
             dns_resolver: async
             sync-start: true
+
+        auth-pg-cache:
+			pgcomponent: portfolio-db
+			update-interval: 10s
 
         dns-client:
             fs-task-processor: fs-task-processor
