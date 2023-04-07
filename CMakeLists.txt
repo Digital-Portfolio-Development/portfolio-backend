@@ -17,7 +17,7 @@ add_library(${PROJECT_NAME}_objs OBJECT
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql)
 
 include_directories(SYSTEM ./third_party/userver)
-include_directories(SYSTEM ./third_party_jwt/jwt-cpp/include)
+include_directories(SYSTEM ./third_party/jwt-cpp/include)
 
 
 # The Service
