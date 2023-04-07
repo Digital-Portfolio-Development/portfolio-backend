@@ -98,11 +98,7 @@ namespace portfolio::user::login {
     bool flag = true;
 
     std::string hash_password = candidate[0]["password"].As<std::string>();
-    std::cout << "HASH_PASSWORD:\n" + hash_password + "\n\n\n\n\n\n";
-    std::string unhash_password = userver::crypto::base64::Base64UrlDecode(hash_password);
-    std::cout << "UNHASH_PASSWORD:\n" + unhash_password + "\n\n\n\n\n\n";
-
-    if (password != userver::crypto::base64::Base64Decode(hash_password)) {
+    if (password != userver::crypto::base64::Base64UrlDecode(hash_password)) {
       flag = false;
     }
 
