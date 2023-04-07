@@ -74,4 +74,11 @@ jobs:
             if: matrix.make == 'test-release'
             run: |
                 killall portfolio
+        
+          - name: Upload the artifacts
+            uses: skx/github-action-publish-binaries@master
+            env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            with:
+                args: 'portfolio'
 
