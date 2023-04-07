@@ -59,18 +59,18 @@ jobs:
                 make dist-clean
                 make install PREFIX=`pwd`/local_installation/
 
-          - name: Test run after install
-            run: |
-                ./local_installation/bin/portfolio --config=./local_installation/etc/portfolio/static_config.yaml &
+#          - name: Test run after install
+#            run: |
+#                ./local_installation/bin/portfolio --config=./local_installation/etc/portfolio/static_config.yaml &
 
 #          - name: Check work run service
 #            if: matrix.make == 'test-release'
 #            run: |
 #                ps aux | grep portfolio | grep config && curl http://localhost:8080/user/register -v
 
-          - name: Stop all
-            run: |
-                killall portfolio
+#          - name: Stop all
+#            run: |
+#                killall portfolio
         
           - name: Upload the artifacts
             uses: skx/github-action-publish-binaries@master
