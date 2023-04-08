@@ -5,3 +5,6 @@ CMAKE_COMMON_FLAGS += -DUSERVER_FEATURE_CRYPTOPP_BLAKE=0 -DUSERVER_DOWNLOAD_PACK
 start:
 	@cd build_release \
 		&& ./portfolio --config ../configs/static_config.yaml
+
+.PHONY: run
+run: install start
