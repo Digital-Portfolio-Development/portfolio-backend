@@ -1,13 +1,13 @@
-#include <userver/utest/using_namespace_userver.hpp>
+#include <shared/include/userver/utest/using_namespace_userver.hpp>
 
 #include <vector>
 
-#include <userver/cache/base_postgres_cache.hpp>
-#include <userver/crypto/algorithm.hpp>
-#include <userver/server/auth/user_auth_info.hpp>
-#include <userver/storages/postgres/io/array_types.hpp>
+#include <core/include/userver/server/auth/user_auth_info.hpp>
+#include <postgresql/include/userver/cache/base_postgres_cache.hpp>
+#include <postgresql/include/userver/storages/postgres/io/array_types.hpp>
+#include <shared/include/userver/crypto/algorithm.hpp>
 
-namespace portfolio::user::auth {
+namespace portfolio::user {
   struct UserDbInfo {
     server::auth::UserAuthInfo::Ticket token;
     std::int64_t user_id;
@@ -33,4 +33,4 @@ namespace portfolio::user::auth {
   };
 
   using AuthCache = components::PostgreCache<AuthCachePolicy>;
-}  // namespace portfolio::user::auth
+}  // namespace portfolio::user

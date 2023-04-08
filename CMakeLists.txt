@@ -9,10 +9,11 @@ add_subdirectory(third_party/userver)
 
 # Common sources
 add_library(${PROJECT_NAME}_objs OBJECT
-    src/create_user.hpp
-	src/create_session.hpp
-	src/auth_bearer.hpp
-	src/user_info_cache.hpp
+	src/user_service/create_user.hpp
+	src/user_service/create_session.hpp
+	src/user_service/auth_bearer.hpp
+	src/user_service/user_info_cache.hpp
+	src/project_service/create_project.hpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql)
 
@@ -23,13 +24,15 @@ include_directories(SYSTEM ./third_party/jwt-cpp/include)
 # The Service
 add_executable(${PROJECT_NAME}
 	src/main.cpp
-	src/create_user.cpp
-	src/create_user.hpp
-	src/create_session.cpp
-	src/create_session.hpp
-	src/auth_bearer.cpp
-	src/auth_bearer.hpp
-	src/user_info_cache.hpp
+	src/user_service/create_user.cpp
+	src/user_service/create_user.hpp
+	src/user_service/create_session.cpp
+	src/user_service/create_session.hpp
+	src/user_service/auth_bearer.cpp
+	src/user_service/auth_bearer.hpp
+	src/user_service/user_info_cache.hpp
+	src/project_service/create_project.cpp
+	src/project_service/create_project.hpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 

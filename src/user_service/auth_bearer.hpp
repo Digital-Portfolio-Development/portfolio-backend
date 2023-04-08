@@ -1,9 +1,9 @@
 #include <iostream>
 
-#include <userver/utest/using_namespace_userver.hpp>
-#include <userver/server/handlers/auth/auth_checker_factory.hpp>
+#include <core/include/userver/server/handlers/auth/auth_checker_factory.hpp>
+#include <shared/include/userver/utest/using_namespace_userver.hpp>
 
-namespace portfolio::user::auth {
+namespace portfolio::user {
   class CheckerFactory final : public userver::server::handlers::auth::AuthCheckerFactoryBase {
   public:
     userver::server::handlers::auth::AuthCheckerBasePtr operator()(
@@ -11,4 +11,4 @@ namespace portfolio::user::auth {
         const server::handlers::auth::HandlerAuthConfig &auth_config,
         const server::handlers::auth::AuthCheckerSettings&) const override;
   };
-} // namespace portfolio::user::auth
+} // namespace portfolio::user

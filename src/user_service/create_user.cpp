@@ -2,15 +2,15 @@
 
 #include <fmt/format.h>
 
-#include <userver/server/handlers/http_handler_base.hpp>
-#include <userver/clients/dns/component.hpp>
-#include <userver/storages/postgres/cluster.hpp>
-#include <userver/storages/postgres/component.hpp>
-#include <userver/crypto/base64.hpp>
-#include <userver/utils/regex.hpp>
-#include <userver/server/http/http_status.hpp>
+#include <core/include/userver/clients/dns/component.hpp>
+#include <core/include/userver/server/handlers/http_handler_base.hpp>
+#include <core/include/userver/server/http/http_status.hpp>
+#include <postgresql/include/userver/storages/postgres/cluster.hpp>
+#include <postgresql/include/userver/storages/postgres/component.hpp>
+#include <shared/include/userver/crypto/base64.hpp>
+#include <shared/include/userver/utils/regex.hpp>
 
-namespace portfolio::user::reqister {
+namespace portfolio::user {
   namespace {
     class CreateUser final : public userver::server::handlers::HttpHandlerBase {
     public:
@@ -43,7 +43,7 @@ namespace portfolio::user::reqister {
 
         // Validation
         for (auto x : userver::formats::json::Items(body)) {
-          error = portfolio::user::reqister::RegisterValidation(
+          error = portfolio::user::RegisterValidation(
               x.key,
               x.value.ConvertTo<std::string>()
           );
@@ -115,6 +115,6 @@ namespace portfolio::user::reqister {
     component_list.Append<CreateUser>();
     component_list.Append<userver::clients::dns::Component>();
   }
-} // namespace portfolio::user::register
+} // namespace portfolio::user
 
 

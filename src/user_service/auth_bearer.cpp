@@ -1,9 +1,9 @@
 #include "auth_bearer.hpp"
 #include "user_info_cache.hpp"
 
-#include <userver/crypto/verifiers.hpp>
+#include <shared/include/userver/crypto/verifiers.hpp>
 
-namespace portfolio::user::auth {
+namespace portfolio::user {
   class AuthBearerChecker final : public server::handlers::auth::AuthCheckerBase {
   public:
     using AuthCheckResult = server::handlers::auth::AuthCheckResult;
@@ -78,5 +78,5 @@ namespace portfolio::user::auth {
     const auto& auth_cache = context.FindComponent<AuthCache>();
     return std::make_shared<AuthBearerChecker>(auth_cache, std::move(scopes));
   }
-} // namespace portfolio::user::auth
+} // namespace portfolio::user
 
