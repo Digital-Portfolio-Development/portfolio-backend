@@ -67,6 +67,11 @@ components_manager:
         	method: POST
         	task_processor: main-task-processor
 
+       	handler-project-create:
+       		path: /project/create
+       		method: POST
+       		task_processor: main-task-processor
+
         portfolio-db:
             dbconnection: $dbconnection
             blocking_task_processor: fs-task-processor

@@ -1,17 +1,17 @@
 #include "create_session.hpp"
 #include "userver/clients/dns/component.hpp"
 
-#include <userver/server/handlers/http_handler_base.hpp>
-#include <userver/crypto/base64.hpp>
-#include <userver/storages/postgres/cluster.hpp>
-#include <userver/storages/postgres/component.hpp>
-#include <userver/utils/regex.hpp>
 #include <jwt-cpp/jwt.h>
+#include <core/include/userver/server/handlers/http_handler_base.hpp>
+#include <postgresql/include/userver/storages/postgres/cluster.hpp>
+#include <postgresql/include/userver/storages/postgres/component.hpp>
+#include <shared/include/userver/crypto/base64.hpp>
+#include <shared/include/userver/utils/regex.hpp>
 
 // for cookies (SetHttpOnly, SetSameSite)
-#include <userver/server/http/http_response_cookie.hpp>
+#include <core/include/userver/server/http/http_response_cookie.hpp>
 
-namespace portfolio::user::login {
+namespace portfolio::user {
   namespace {
     class CreateSession final : public userver::server::handlers::HttpHandlerBase {
     public:
@@ -38,7 +38,7 @@ namespace portfolio::user::login {
 
         // Validation
         for (auto x : userver::formats::json::Items(body)) {
-          error = portfolio::user::login::LoginValidation(
+          error = portfolio::user::LoginValidation(
               x.key,
               x.value.ConvertTo<std::string>()
           );
@@ -52,7 +52,7 @@ namespace portfolio::user::login {
         std::string password = body["password"].ConvertTo<std::string>();
 
         auto candidate = transaction.Execute("SELECT * from users WHERE email = $1", email);
-        if (candidate.IsEmpty() || !portfolio::user::login::ComparePassword(candidate, password)) {
+        if (candidate.IsEmpty() || !portfolio::user::ComparePassword(candidate, password)) {
           request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
           return "Invalid email or password";
         }
@@ -108,4 +108,4 @@ namespace portfolio::user::login {
   void AppendLoginUser(userver::components::ComponentList &component_list) {
     component_list.Append<CreateSession>();
   }
-} // namespace portfolio::user::login
+} // namespace portfolio::user
