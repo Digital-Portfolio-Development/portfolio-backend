@@ -13,7 +13,7 @@ add_library(${PROJECT_NAME}_objs OBJECT
 	src/user_service/create_session.hpp
 	src/user_service/auth_bearer.hpp
 	src/user_service/user_info_cache.hpp
-	src/project_service/create_project.hpp
+	src/project_service/project.hpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql)
 
@@ -31,8 +31,9 @@ add_executable(${PROJECT_NAME}
 	src/user_service/auth_bearer.cpp
 	src/user_service/auth_bearer.hpp
 	src/user_service/user_info_cache.hpp
-	src/project_service/create_project.cpp
-	src/project_service/create_project.hpp
+        src/project_service/project.cpp
+		src/project_service/project_by_id.cpp
+	src/project_service/project.hpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 
