@@ -37,46 +37,35 @@ namespace portfolio::user {
         userver::formats::json::Value body = userver::formats::json::FromString(request.RequestBody());
 
         // Validation
-        for (auto [key, value] : userver::formats::json::Items(body)) {
-          error = portfolio::user::LoginValidation(key, value.ConvertTo<std::string>());
+        for (auto x : userver::formats::json::Items(body)) {
+          error = portfolio::user::LoginValidation(
+              x.key,
+              x.value.ConvertTo<std::string>()
+          );
           if (!error.empty()) {
             request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
             return error;
           }
         }
 
-        std::string email = body["email"].As<std::string>();
-        std::string password = body["password"].As<std::string>();
+        std::string email = body["email"].ConvertTo<std::string>();
+        std::string password = body["password"].ConvertTo<std::string>();
 
-        userver::storages::postgres::ResultSet candidate =
-            transaction.Execute("SELECT * from users WHERE email = $1", email);
+        auto candidate = transaction.Execute("SELECT * from users WHERE email = $1", email);
         if (candidate.IsEmpty() || !portfolio::user::ComparePassword(candidate, password)) {
           request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
           return "Invalid email or password";
         }
 
-        std::int32_t user_id = candidate[0]["user_id"].As<std::int32_t>();
         std::string token = jwt::create()
             .set_issuer("auth0")
             .set_type("JWS")
-            .set_payload_claim("token", jwt::claim(email))
+            .set_payload_claim("token", jwt::claim(password))
             .sign(jwt::algorithm::hs256{"secret-key"});
 
-        userver::server::http::Cookie cookie1("user_id", std::to_string(user_id));
-        userver::server::http::Cookie cookie2("access_key", token);
-        cookie1.SetHttpOnly();
-        cookie1.SameSite();
-        cookie1.SetPath("/");
-        cookie2.SetHttpOnly();
-        cookie2.SameSite();
-        cookie2.SetPath("/");
-
-        // work only with SSL/HTTPS
-        // cookie1.SetSecure();
-        // cookie2.SetSecure();
-
-        request.GetHttpResponse().SetCookie(cookie1);
-        request.GetHttpResponse().SetCookie(cookie2);
+        userver::server::http::Cookie cookie("token", token);
+        cookie.SetHttpOnly();
+        cookie.SameSite();
 
         return "Success auth";
       }

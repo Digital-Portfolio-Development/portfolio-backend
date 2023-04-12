@@ -25,16 +25,16 @@ namespace portfolio::user {
       const userver::storages::postgres::Query kInsertValue {
         "INSERT INTO users (name, last_name, username, email, password)"
         "VALUES ($1, $2, $3, $4, $5)",
-        userver::storages::postgres::Query::Name {"user_insert_value"},
+        userver::storages::postgres::Query::Name {"sample_insert_value"},
       };
 
       std::string HandleRequestThrow(
           const userver::server::http::HttpRequest &request,
           userver::server::request::RequestContext &) const override {
-        std::string error;
+        std::string response, error;
 
         userver::storages::postgres::Transaction transaction = pg_cluster_->Begin(
-            "create_user_transaction",
+            "create_transaction",
             userver::storages::postgres::ClusterHostType::kMaster,
             {}
         );
@@ -42,24 +42,26 @@ namespace portfolio::user {
         userver::formats::json::Value body = userver::formats::json::FromString(request.RequestBody());
 
         // Validation
-        for (auto [key, value] : userver::formats::json::Items(body)) {
-          error = portfolio::user::RegisterValidation(key, value.ConvertTo<std::string>());
+        for (auto x : userver::formats::json::Items(body)) {
+          error = portfolio::user::RegisterValidation(
+              x.key,
+              x.value.ConvertTo<std::string>()
+          );
           if (!error.empty()) {
             request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
             return error;
           }
         }
 
-        std::string name = body["name"].As<std::string>();
-        std::string last_name = body["last_name"].As<std::string>();
-        std::string username = body["username"].As<std::string>();
-        std::string email = body["email"].As<std::string>();
-        std::string password = body["password"].As<std::string>();
+        std::string name = body["name"].ConvertTo<std::string>();
+        std::string last_name = body["last_name"].ConvertTo<std::string>();
+        std::string username = body["username"].ConvertTo<std::string>();
+        std::string email = body["email"].ConvertTo<std::string>();
+        std::string password = body["password"].ConvertTo<std::string>();
 
         userver::storages::postgres::ResultSet candidate =
             transaction.Execute("SELECT username from users WHERE username = $1", username);
         if (!candidate.IsEmpty()) {
-          request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
           return "User with this username already exists";
         }
 
@@ -70,11 +72,10 @@ namespace portfolio::user {
         if (res.RowsAffected()) {
           transaction.Commit();
           request.SetResponseStatus(userver::server::http::HttpStatus::kCreated);
-          return fmt::format("User {} was created!", username);
+          response = fmt::format("User {} was created!", username);
         }
 
-        request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-        return "Unknown error";;
+        return response;
       }
 
       userver::storages::postgres::ClusterPtr pg_cluster_;
