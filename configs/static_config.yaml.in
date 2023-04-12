@@ -58,23 +58,18 @@ components_manager:
             url_trailing_slash: strict-match
 
         handler-user-register:
-            path: /api/user/register               	# Registering handler by URL '/api/user/register'.
+            path: /user/register               		# Registering handler by URL '/user/register'.
             method: POST                  			# It will only reply to POST requests.
             task_processor: main-task-processor  	# Run it on CPU bound task processor
 
         handler-user-login:
-        	path: /api/user/login
+        	path: /user/login
         	method: POST
         	task_processor: main-task-processor
 
-       	handler-project:
-       		path: /api/project
-       		method: GET,POST
-       		task_processor: main-task-processor
-
-       	handler-project-id:
-       		path: /api/project/{project_id}
-       		method: GET,PUT,DELETE
+       	handler-project-create:
+       		path: /project/create
+       		method: POST
        		task_processor: main-task-processor
 
         portfolio-db:
