@@ -6,4 +6,4 @@ is_testing: false
 
 server-port: 8080
 
-dbconnection: 'postgresql://postgres:postgres@localhost:5432/portfolio'
+dbconnection: 'postgresql://postgres:password@localhost:5432/db-name'

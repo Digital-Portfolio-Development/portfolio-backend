@@ -51,13 +51,13 @@
     "statement_timeout_ms": 500
   },
   "POSTGRES_HANDLERS_COMMAND_CONTROL": {
-    "/api/user/register": {
+    "/user/register": {
       "POST": {
         "network_timeout_ms": 500,
         "statement_timeout_ms": 250
       }
     },
-    "/api/user/login": {
+    "/user/login": {
       "POST": {
         "network_timeout_ms": 500,
         "statement_timeout_ms": 250

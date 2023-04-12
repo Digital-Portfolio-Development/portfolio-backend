@@ -10,7 +10,7 @@
 #include "user_service/create_session.hpp"
 #include "user_service/create_user.hpp"
 #include "user_service/user_info_cache.hpp"
-#include "project_service/project.hpp"
+#include "project_service/create_project.hpp"
 
 int main(int argc, char* argv[]) {
   // auth checker registration
@@ -29,8 +29,7 @@ int main(int argc, char* argv[]) {
   // component list
   portfolio::user::AppendRegisterUser(component_list);
   portfolio::user::AppendLoginUser(component_list);
-  portfolio::project::AppendProject(component_list);
-  portfolio::project::AppendProjectById(component_list);
+  portfolio::project::AppendCreateProject(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
 }
