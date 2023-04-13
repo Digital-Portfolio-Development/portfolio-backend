@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 #include <vector>
+#include <fmt/format.h>
 
 #include <core/include/userver/components/component_list.hpp>
 #include <userver/storages/postgres/component.hpp>
@@ -22,7 +23,8 @@ namespace portfolio::project {
     std::optional<userver::storages::postgres::TimePointTz> updated_at;
   };
 
+  std::string ProjectValidation(const std::string &key, const std::string &value);
+
   void AppendProject(userver::components::ComponentList &component_list);
   void AppendProjectById(userver::components::ComponentList &component_list);
-  std::string ProjectValidation(const std::string &key, const std::string &value);
 } // namespace portfolio::project

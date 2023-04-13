@@ -74,7 +74,7 @@ components_manager:
 
        	handler-project-id:
        		path: /api/project/{project_id}
-       		method: GET,PUT,DELETE
+       		method: GET,PATCH,DELETE
        		task_processor: main-task-processor
 
         portfolio-db:

@@ -1,7 +1,5 @@
 #include "project.hpp"
 
-#include <fmt/format.h>
-
 #include <userver/server/handlers/http_handler_base.hpp>
 #include <userver/server/http/http_response_cookie.hpp>
 #include <userver/server/request/response_base.hpp>
