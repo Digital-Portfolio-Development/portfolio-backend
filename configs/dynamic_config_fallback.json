@@ -36,7 +36,7 @@
   },
   "POSTGRES_CONNECTION_PIPELINE_ENABLED": false,
   "POSTGRES_CONNECTION_POOL_SETTINGS": {
-    "postgres-db-1": {
+    "portfolio-db": {
       "max_pool_size": 15,
       "max_queue_size": 200,
       "min_pool_size": 8
@@ -46,18 +46,11 @@
     "network_timeout_ms": 750,
     "statement_timeout_ms": 500
   },
-  "POSTGRES_HANDLERS_COMMAND_CONTROL": {
-    "/v1/hello": {
-      "POST": {
-        "network_timeout_ms": 500,
-        "statement_timeout_ms": 250
-      }
-    }
-  },
+  "POSTGRES_HANDLERS_COMMAND_CONTROL": {},
   "POSTGRES_QUERIES_COMMAND_CONTROL": {},
   "POSTGRES_CONNECTION_SETTINGS": {},
   "POSTGRES_STATEMENT_METRICS_SETTINGS": {
-    "postgres-db-1": {
+    "portfolio-db": {
       "max_statement_metrics": 5
     }
   }

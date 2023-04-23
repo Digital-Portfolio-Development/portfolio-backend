@@ -1,39 +1,41 @@
 cmake_minimum_required(VERSION 3.12)
-project(pg_service_template CXX)
+project(portfolio CXX)
 
 include(third_party/userver/cmake/SetupEnvironment.cmake)
 include(GNUInstallDirs)
 
 add_subdirectory(third_party/userver)
+add_subdirectory(third_party/jwt-cpp)
 
 
 # Common sources
 add_library(${PROJECT_NAME}_objs OBJECT
-    src/hello.hpp
-    src/hello.cpp
+    src/user_service/create_user.hpp
+	src/user_service/create_session.hpp
+	src/user_service/auth_bearer.hpp
+	src/user_service/user_info_cache.hpp
+	src/project_service/project.hpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql)
 
+include_directories(SYSTEM ./third_party/userver)
+include_directories(SYSTEM ./third_party/jwt-cpp/include)
 
 # The Service
-add_executable(${PROJECT_NAME} src/main.cpp)
+add_executable(${PROJECT_NAME}
+	src/main.cpp
+	src/user_service/create_user.cpp
+	src/user_service/create_user.hpp
+	src/user_service/create_session.cpp
+	src/user_service/create_session.hpp
+	src/user_service/auth_bearer.cpp
+	src/user_service/auth_bearer.hpp
+	src/user_service/user_info_cache.hpp
+	src/project_service/project.cpp
+	src/project_service/project_by_id.cpp
+	src/project_service/project.hpp
+)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
-
-
-# Unit Tests
-add_executable(${PROJECT_NAME}_unittest
-    src/hello_test.cpp
-)
-target_link_libraries(${PROJECT_NAME}_unittest PRIVATE ${PROJECT_NAME}_objs userver-utest)
-add_google_tests(${PROJECT_NAME}_unittest)
-
-
-# Benchmarks
-add_executable(${PROJECT_NAME}_benchmark
-	src/hello_benchmark.cpp
-)
-target_link_libraries(${PROJECT_NAME}_benchmark PRIVATE ${PROJECT_NAME}_objs userver-ubench)
-add_google_benchmark_tests(${PROJECT_NAME}_benchmark)
 
 # Functional Tests
 add_subdirectory(tests)
