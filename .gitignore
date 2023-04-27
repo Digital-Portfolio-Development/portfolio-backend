@@ -11,3 +11,5 @@ cmake-build-*
 Testing/
 configs/static_config.yaml
 configs/private.json
+third_party/userver
+third_party/jwt-cpp
