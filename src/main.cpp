@@ -10,12 +10,12 @@
 #include <userver/storages/secdist/provider_component.hpp>
 #include <userver/server/handlers/auth/auth_checker_factory.hpp>
 
-#include "user_service/create_user.hpp"
-#include "user_service/create_session.hpp"
-#include "user_service/auth_bearer.hpp"
-#include "user_service/user_info_cache.hpp"
-#include "project_service/project.hpp"
-
+#include "services/user_service/user.hpp"
+#include "services/user_service/session.hpp"
+#include "services/user_service/auth_bearer.hpp"
+#include "services/user_service/user_info_cache.hpp"
+#include "services/project_service/project.hpp"
+#include "services/comment_service/comment.hpp"
 
 int main(int argc, char* argv[]) {
   // auth checker registration
@@ -35,10 +35,10 @@ int main(int argc, char* argv[]) {
                             .Append<userver::clients::dns::Component>();
 
   // component list includes
-  portfolio::user::AppendRegisterUser(component_list);
-  portfolio::user::AppendLoginUser(component_list);
+  portfolio::user::AppendUser(component_list);
+  portfolio::session::AppendSession(component_list);
   portfolio::project::AppendProject(component_list);
-  portfolio::project::AppendProjectById(component_list);
+  portfolio::comment::AppendComment(component_list);
 
   return userver::utils::DaemonMain(argc, argv, component_list);
 }

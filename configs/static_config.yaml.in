@@ -77,9 +77,9 @@ components_manager:
       method: GET,POST
       task_processor: main-task-processor
 
-    handler-project-id:                         # endpoint to get, patch, delete project by project id
-      path: /api/project/{project_id}
-      method: GET,PATCH,DELETE
+    handler-comment:
+      path: /api/comment
+      method: POST
       task_processor: main-task-processor
 
     portfolio-db:

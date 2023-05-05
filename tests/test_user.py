@@ -13,24 +13,23 @@ async def test_user_register(service_client):
             'name': 'John',
             'last_name': 'Doe',
             'username': 'johndoe',
-            'email': 'johndoe@gmail.com',
-            'password': '12345'
+            'password': '12345678'
         },
     )
     assert response.status == 201
-    assert response.text == 'User johndoe was created!\n'
+    assert response.text == '{"message":"user was created!"}'
 
 
 async def test_user_login(service_client):
     response = await service_client.post(
         '/api/user/login',
         json={
-            'email': 'example@gmail.com',
-            'password': 'example'
+            'username': 'johndoe',
+            'password': '12345678'
         },
     )
     assert response.status == 400
-    assert response.text == 'Invalid email or password\n'
+    assert response.text == '{"message":"Invalid email or password"}'
 
 
 async def test_success_auth(service_client):
@@ -40,22 +39,21 @@ async def test_success_auth(service_client):
             'name': 'John',
             'last_name': 'Doe',
             'username': 'johndoe',
-            'email': 'johndoe@gmail.com',
-            'password': '12345'
+            'password': '12345678'
         },
     )
     assert response.status == 201
-    assert response.text == 'User johndoe was created!\n'
+    assert response.text == '{"message":"user was created!"}'
 
     response = await service_client.post(
         '/api/user/login',
         json={
-            'email': 'johndoe@gmail.com',
-            'password': '12345'
+            'username': 'johndoe',
+            'password': '12345678'
         },
     )
     assert response.status == 200
-    assert response.text == 'Success auth!\n'
+    assert response.text == '{"message":"Success auth!"}'
 
 
 async def test_db_updates(service_client):
@@ -65,12 +63,11 @@ async def test_db_updates(service_client):
             'name': 'John',
             'last_name': 'Doe',
             'username': 'johndoe',
-            'email': 'johndoe@gmail.com',
-            'password': '12345'
+            'password': '12345678'
         },
     )
     assert response.status == 201
-    assert response.text == 'User johndoe was created!\n'
+    assert response.text == '{"message":"user was created!"}'
 
     response = await service_client.post(
         '/api/user/register',
@@ -78,12 +75,11 @@ async def test_db_updates(service_client):
             'name': 'John',
             'last_name': 'Doe',
             'username': 'johndoe',
-            'email': 'johndoe@gmail.com',
-            'password': '12345'
+            'password': '12345678'
         },
     )
     assert response.status == 400
-    assert response.text == 'User with this username already exists\n'
+    assert response.text == '{"message":"this username is already in use"}'
 
 
 @pytest.mark.pgsql('public', files=['create_user.sql'])
@@ -94,9 +90,8 @@ async def test_db_initial_data(service_client):
             'name': 'John',
             'last_name': 'Doe',
             'username': 'johndoe',
-            'email': 'johndoe@gmail.com',
-            'password': '12345'
+            'password': '12345678'
         },
     )
     assert response.status == 400
-    assert response.text == 'User with this username already exists\n'
+    assert response.text == '{"message":"this username is already in use"}'

@@ -10,11 +10,14 @@ add_subdirectory(third_party/jwt-cpp)
 
 # Common sources
 add_library(${PROJECT_NAME}_objs OBJECT
-    src/user_service/create_user.hpp
-	src/user_service/create_session.hpp
-	src/user_service/auth_bearer.hpp
-	src/user_service/user_info_cache.hpp
-	src/project_service/project.hpp
+	src/base.hpp
+	src/services/user_service/user.hpp
+	src/services/user_service/session.hpp
+	src/services/user_service/auth_bearer.hpp
+	src/services/user_service/user_info_cache.hpp
+	src/services/project_service/project.hpp
+	src/services/comment_service/comment.hpp
+	src/utils/utils.hpp
 )
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql)
 
@@ -24,16 +27,21 @@ include_directories(SYSTEM ./third_party/jwt-cpp/include)
 # The Service
 add_executable(${PROJECT_NAME}
 	src/main.cpp
-	src/user_service/create_user.cpp
-	src/user_service/create_user.hpp
-	src/user_service/create_session.cpp
-	src/user_service/create_session.hpp
-	src/user_service/auth_bearer.cpp
-	src/user_service/auth_bearer.hpp
-	src/user_service/user_info_cache.hpp
-	src/project_service/project.cpp
-	src/project_service/project_by_id.cpp
-	src/project_service/project.hpp
+	src/base.cpp
+	src/base.hpp
+	src/services/user_service/user.cpp
+	src/services/user_service/user.hpp
+	src/services/user_service/session.cpp
+	src/services/user_service/session.hpp
+	src/services/user_service/auth_bearer.cpp
+	src/services/user_service/auth_bearer.hpp
+	src/services/user_service/user_info_cache.hpp
+	src/services/project_service/project.cpp
+	src/services/project_service/project.hpp
+	src/services/comment_service/comment.cpp
+	src/services/comment_service/comment.hpp
+	src/utils/validate_request.cpp
+	src/utils/response_message.cpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 

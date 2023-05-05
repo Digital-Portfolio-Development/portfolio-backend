@@ -11,8 +11,12 @@ async def test_project(service_client):
         '/api/project',
         json={
             'name': 'hello',
-            'description': 'project for user portfolio'
+            'short_description': 'project',
+            'full_description': 'project for user portfolio',
+            'tags': ['prod', 'random', 'programming'],
+            'priority': 6,
+            'visibility': True
         },
     )
     assert response.status == 401
-    assert response.text == 'Unauthorized\n'
+    assert response.text == '{"message":"Unauthorized"}'
