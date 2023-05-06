@@ -1,4 +1,5 @@
 #include "base.hpp"
+using namespace userver::server::http;
 
 namespace portfolio::base {
   Base::Base(const userver::components::ComponentConfig& config,
@@ -8,15 +9,14 @@ namespace portfolio::base {
               .GetCluster()) {}
 
   userver::formats::json::Value Base::CreateObject(
-    const userver::server::http::HttpRequest &request,
+    const HttpRequest &request,
     const std::string &target,
       const userver::storages::postgres::Query &insert_value
   ) const {
     std::string user_id = request.GetCookie("user_id");
     if (target != "user") {
       if (user_id.empty()) {
-        request.SetResponseStatus(userver::server::http::HttpStatus::kUnauthorized);
-        return utils::ResponseMessage("Unauthorized");
+        return utils::ReturnValueAndSetStatus(request, "Unauthorized", HttpStatus::kUnauthorized);
       }
     }
 
@@ -30,8 +30,7 @@ namespace portfolio::base {
     if (target == "user") {
       std::string error = CheckAndHash(transaction, body);
       if (!error.empty()) {
-        request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-        return utils::ResponseMessage(error);
+        return utils::ReturnValueAndSetStatus(request, error, HttpStatus::kBadRequest);
       }
     }
 
@@ -58,12 +57,9 @@ namespace portfolio::base {
 
     if (res.RowsAffected()) {
       transaction.Commit();
-      request.SetResponseStatus(userver::server::http::HttpStatus::kCreated);
-      return utils::ResponseMessage(fmt::format("{} was created!", target));
+      return utils::ReturnValueAndSetStatus(request, fmt::format("{} was created!", target), HttpStatus::kCreated);
     }
-
-    request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-    return utils::ResponseMessage("Unknown error");
+    return utils::ReturnValueAndSetStatus(request, "Unknown error", HttpStatus::kBadRequest);
   }
 
   std::string Base::CheckAndHash(

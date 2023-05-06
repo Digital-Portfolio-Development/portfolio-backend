@@ -19,7 +19,9 @@ namespace portfolio::comment {
         }
         return CreateObject(request, "comment", kInsertValue);
       }
-
+      case userver::server::http::HttpMethod::kGet: {
+        return GetRows<CommentStruct>(request, "comment", fieldsNames);
+      }
       default:
         throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
             fmt::format("Unsupported method {}", request.GetMethod())});

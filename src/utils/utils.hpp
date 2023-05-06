@@ -3,6 +3,7 @@
 
 #include <userver/formats/json.hpp>
 #include <userver/utils/regex.hpp>
+#include <userver/server/http/http_request.hpp>
 
 namespace portfolio::utils {
   template<class ...T>
@@ -33,4 +34,10 @@ namespace portfolio::utils {
 
   userver::formats::json::Value ResponseMessage(
       const std::string &message);
+
+  userver::formats::json::Value ReturnValueAndSetStatus(
+      const userver::server::http::HttpRequest &request,
+      std::string message,
+      userver::server::http::HttpStatus status);
+
 }

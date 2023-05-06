@@ -7,6 +7,7 @@ include(GNUInstallDirs)
 add_subdirectory(third_party/userver)
 add_subdirectory(third_party/jwt-cpp)
 
+set(CMAKE_CXX_STANDARD 20)
 
 # Common sources
 add_library(${PROJECT_NAME}_objs OBJECT
@@ -42,7 +43,7 @@ add_executable(${PROJECT_NAME}
 	src/services/comment_service/comment.hpp
 	src/utils/validate_request.cpp
 	src/utils/response_message.cpp
-)
+        src/utils/ReturnValueAndSetStatus.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 
 # Functional Tests
