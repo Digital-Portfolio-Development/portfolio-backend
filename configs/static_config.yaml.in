@@ -83,7 +83,7 @@ components_manager:
       task_processor: main-task-processor
 
     handler-project-comment:
-      path: /api/project/comments
+      path: /api/project/comments/{comments_project_id}
       method: GET,PATCH,DELETE
       task_processor: main-task-processor
 
