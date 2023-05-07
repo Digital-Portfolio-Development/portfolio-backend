@@ -1,5 +1,7 @@
 #include "project.hpp"
 
+
+// TODO: реализовать похожую логику для сервиса поста
 namespace portfolio::project {
   Project::Project(const userver::components::ComponentConfig& config,
                  const userver::components::ComponentContext& context)
@@ -9,21 +11,50 @@ namespace portfolio::project {
       const userver::server::http::HttpRequest &request,
       const userver::formats::json::Value &request_json,
       userver::server::request::RequestContext &) const {
+    std::string key_word = request.GetArg("key");
+    std::string project_id = request.GetPathArg("project_id");
+    std::string comment = request.GetPathArg("comments");
 
-    switch (request.GetMethod()) {
-      case userver::server::http::HttpMethod::kPost: {
-        std::string error = CheckRequestData(request_json);
-        if (!error.empty()) {
-          request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-          return utils::ResponseMessage(error);
-        }
-        return CreateObject(request, "project", kInsertValue);
-      }
-
-      default:
-        throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
-          fmt::format("Unsupported method {}", request.GetMethod())});
+    if (!key_word.empty()) {
+      return SearchAndGetObjects<utils::ProjectTuple>("project", "projects", key_word);
     }
+
+    /* TODO: разбить блоки if на разные функции:
+     * 1) HandleProjectWithId
+     * 2) HandleProjectComments
+     * 3) HandleProject
+     *
+     */
+    if (!project_id.empty()) {
+      // TODO: сделать обработку update, delete методов
+      switch (request.GetMethod()) {
+        case userver::server::http::HttpMethod::kGet:
+          return utils::ResponseMessage("Hi from GET project by id");
+
+        default:
+          throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
+              fmt::format("Unsupported method {}", request.GetMethod())});
+      }
+    } else if (!comment.empty()) {
+      // TODO: сделать обработку эндпоинта '/api/project/comments'
+    } else {
+      switch (request.GetMethod()) {
+        case userver::server::http::HttpMethod::kPost: {
+          std::string error = CheckRequestData(request_json);
+          if (!error.empty()) {
+            request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
+            return utils::ResponseMessage(error);
+          }
+          return CreateObject(request, "project", kInsertValue);
+        }
+
+        default:
+          throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
+              fmt::format("Unsupported method {}", request.GetMethod())});
+      }
+    }
+
+    return {};
   }
 
   std::string Project::CheckRequestData(
@@ -51,6 +82,8 @@ namespace portfolio::project {
   }
 
   void AppendProject(userver::components::ComponentList &component_list) {
-    component_list.Append<Project>();
+    component_list.Append<Project>("handler-project");
+    component_list.Append<Project>("handler-project-id");
+    component_list.Append<Project>("handler-project-comment");
   }
 } // namespace portfolio::project

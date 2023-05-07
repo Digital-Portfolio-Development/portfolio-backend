@@ -9,20 +9,42 @@ namespace portfolio::comment {
       const userver::server::http::HttpRequest &request,
       const userver::formats::json::Value &request_json,
       userver::server::request::RequestContext &) const {
+    std::string comment_id = request.GetPathArg("comment_id");
 
-    switch (request.GetMethod()) {
-      case userver::server::http::HttpMethod::kPost: {
-        std::string error = CheckRequestData(request_json);
-        if (!error.empty()) {
-          request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-          return utils::ResponseMessage(error);
+    if (comment_id.empty()) {
+      switch (request.GetMethod()) {
+        case userver::server::http::HttpMethod::kPost: {
+          std::string error = CheckRequestData(request_json);
+          if (!error.empty()) {
+            request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
+            return utils::ResponseMessage(error);
+          }
+          return CreateObject(request, "comment", kInsertValue);
         }
-        return CreateObject(request, "comment", kInsertValue);
-      }
 
-      default:
-        throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
-            fmt::format("Unsupported method {}", request.GetMethod())});
+        default:
+          throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
+              fmt::format("Unsupported method {}", request.GetMethod())});
+      }
+    } else {
+      switch (request.GetMethod()) {
+        case userver::server::http::HttpMethod::kGet:
+          return utils::ResponseMessage("Hello from GET comment by id");
+        case userver::server::http::HttpMethod::kPatch: {
+          std::string error = CheckRequestData(request_json);
+          if (!error.empty()) {
+            request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
+            return utils::ResponseMessage(error);
+          }
+          return UpdateObject(request, "comment", kUpdateValue);
+        }
+        case userver::server::http::HttpMethod::kDelete:
+          return DeleteObject(request, "comment", "comments", comment_id);
+
+        default:
+          throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
+              fmt::format("Unsupported method {}", request.GetMethod())});
+      }
     }
   }
 
@@ -47,6 +69,7 @@ namespace portfolio::comment {
   }
 
   void AppendComment(userver::components::ComponentList &component_list) {
-    component_list.Append<Comment>();
+    component_list.Append<Comment>("handler-comment");
+    component_list.Append<Comment>("handler-comment-id");
   }
 } // namespace portfolio::comment
