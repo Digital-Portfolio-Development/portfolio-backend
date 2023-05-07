@@ -36,7 +36,6 @@ namespace portfolio::project {
               fmt::format("Unsupported method {}", request.GetMethod())});
       }
     } else if (!comments_project_id.empty()) {
-      // TODO: сделать обработку эндпоинта '/api/project/comments/{project_id}'
       switch (request.GetMethod()) {
         case userver::server::http::HttpMethod::kGet: {
           std::string error = CheckRequestData(request_json);

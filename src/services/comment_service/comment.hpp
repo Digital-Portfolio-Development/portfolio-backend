@@ -15,7 +15,7 @@ namespace portfolio::comment {
     // MUST be marked as DEFAULT in the value list.
     const userver::storages::postgres::Query kInsertValue {
         "INSERT INTO comments (user_id, target_id, target_type, text, media)"
-        "VALUES ($1, $2, $3, $4, DEFAULT)",
+        "VALUES ($1, $2, $3, $4, $5)",
         userver::storages::postgres::Query::Name{"comment_insert_value"},
     };
 

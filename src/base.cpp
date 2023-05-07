@@ -9,7 +9,7 @@ namespace portfolio::base {
 
   userver::formats::json::Value Base::CreateObject(
       const userver::server::http::HttpRequest &request,
-      const std::string &target_type,
+      const std::string_view target_type,
       const userver::storages::postgres::Query &insert_value
   ) const {
     std::string user_id = request.GetCookie("user_id");
@@ -65,7 +65,7 @@ namespace portfolio::base {
 
   userver::formats::json::Value Base::UpdateObject(
       const userver::server::http::HttpRequest &request,
-      const std::string &target_type,
+      const std::string_view target_type,
       const userver::storages::postgres::Query &update_value) const {
     std::string user_id = request.GetCookie("user_id");
     if (user_id.empty()) {
@@ -106,9 +106,9 @@ namespace portfolio::base {
 
   userver::formats::json::Value Base::DeleteObject(
       const userver::server::http::HttpRequest &request,
-      const std::string &target_type,
-      const std::string &target_table,
-      const std::string &object_id) const {
+      const std::string_view target_type,
+      const std::string_view target_table,
+      const std::string_view object_id) const {
     std::string user_id = request.GetCookie("user_id");
     if (user_id.empty()) {
       request.SetResponseStatus(userver::server::http::HttpStatus::kUnauthorized);
@@ -122,7 +122,7 @@ namespace portfolio::base {
     );
     auto project = transaction.Execute(
         fmt::format("SELECT * FROM {} WHERE {}_id = $1", target_table, target_type),
-        std::stoi(object_id)
+        std::stoi(object_id.data())
     );
     if (project.IsEmpty()) {
       request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
@@ -133,7 +133,7 @@ namespace portfolio::base {
 
     auto res = transaction.Execute(
         fmt::format("DELETE FROM {} WHERE {}_id = $1 AND user_id = $2", target_table, target_type),
-        std::stoi(object_id),
+        std::stoi(object_id.data()),
         std::stoi(user_id)
     );
 
@@ -145,6 +145,23 @@ namespace portfolio::base {
 
     request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
     return utils::ResponseMessage("unknown error");
+  }
+
+  userver::formats::json::Value Base::GetComments(
+      const std::string_view target_type,
+      const std::string_view target_id
+  ) const {
+    userver::storages::postgres::Transaction transaction = pg_cluster_->Begin(
+        fmt::format("search_get_{}_transaction", target_type),
+        userver::storages::postgres::ClusterHostType::kMaster, {});
+    auto result_set = transaction.Execute(
+        fmt::format("SELECT c.*, u.username, u.user_avatar FROM comments c\n"
+                    "JOIN users u ON c.user_id = u.user_id\n"
+                    "WHERE (c.target_id = {} and c.target_type = '{}')",
+                    std::stoi(target_id.data()), target_type)
+    );
+    auto iter_result_set = result_set.AsSetOf<utils::CommentTuple>(userver::storages::postgres::kRowTag);
+    return utils::CreateJsonResult(iter_result_set);
   }
 
   std::string Base::CheckAndHash(
