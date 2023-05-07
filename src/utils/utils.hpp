@@ -1,10 +1,61 @@
 #include <string>
 #include <vector>
 
+#include <userver/storages/postgres/result_set.hpp>
 #include <userver/formats/json.hpp>
+#include <userver/formats/serialize/common_containers.hpp>
 #include <userver/utils/regex.hpp>
 
 namespace portfolio::utils {
+  using UserTuple = std::tuple<
+      int, std::string, std::string, std::string,
+      std::optional<std::string>, std::optional<std::string>, std::string,
+      std::optional<std::string>, std::optional<std::string>,
+      std::optional<std::string>, std::optional<std::string>,
+      std::optional<std::string>, std::optional<std::string>, std::optional<std::string>,
+      userver::storages::postgres::TimePointTz,
+      std::optional<userver::storages::postgres::TimePointTz>
+  >;
+  using ProjectTuple = std::tuple<
+      int, int, std::string, std::string, std::string,
+      std::string, std::optional<std::string>, std::optional<std::string>,
+      int, bool, int, userver::storages::postgres::TimePointTz,
+      std::optional<userver::storages::postgres::TimePointTz>,
+      std::string, std::optional<std::string>
+  >;
+  using PostTuple = std::tuple<
+      int, int, std::string, std::string, std::optional<std::string>,
+      std::string, userver::storages::postgres::TimePointTz,
+      std::optional<userver::storages::postgres::TimePointTz>,
+      std::string, std::optional<std::string>
+  >;
+  using CommentTuple = std::tuple<
+      int, int, int, std::string, std::string, std::optional<std::string>,
+      userver::storages::postgres::TimePointTz,
+      std::optional<userver::storages::postgres::TimePointTz>,
+      std::string, std::optional<std::string>
+  >;
+  using LikeTuple = std::tuple<
+      int, int, std::string, std::string,
+      userver::storages::postgres::TimePointTz
+  >;
+
+  userver::formats::json::Value CreateJsonResult(
+      userver::storages::postgres::TypedResultSet<
+          UserTuple, userver::storages::postgres::RowTag> &iteration);
+  userver::formats::json::Value CreateJsonResult(
+      userver::storages::postgres::TypedResultSet<
+          ProjectTuple, userver::storages::postgres::RowTag> &iteration);
+  userver::formats::json::Value CreateJsonResult(
+      userver::storages::postgres::TypedResultSet<
+          PostTuple, userver::storages::postgres::RowTag> &iteration);
+  userver::formats::json::Value CreateJsonResult(
+      userver::storages::postgres::TypedResultSet<
+          CommentTuple, userver::storages::postgres::RowTag> &iteration);
+  userver::formats::json::Value CreateJsonResult(
+      userver::storages::postgres::TypedResultSet<
+          LikeTuple, userver::storages::postgres::RowTag> &iteration);
+
   template<class ...T>
   std::string ParseRequestData(
       const userver::formats::json::Value &request, T&& ...args) {

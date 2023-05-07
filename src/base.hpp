@@ -30,9 +30,42 @@ namespace portfolio::base {
         const std::string &target,
         const userver::storages::postgres::Query &insert_value) const;
 
+    [[nodiscard]] userver::formats::json::Value UpdateObject(
+        const userver::server::http::HttpRequest &request,
+        const std::string &target,
+        const userver::storages::postgres::Query &update_value) const;
+
+    [[nodiscard]] userver::formats::json::Value DeleteObject(
+        const userver::server::http::HttpRequest &request,
+        const std::string &target,
+        const std::string &target_table,
+        const std::string &object_id) const;
+
+    template<typename T>
+    [[nodiscard]] userver::formats::json::Value SearchAndGetObjects(
+        const std::string &target_type,
+        const std::string &target_table,
+        const std::string &key_word
+    ) const {
+      userver::storages::postgres::Transaction transaction = pg_cluster_->Begin(
+          fmt::format("search_get_{}_transaction", target_type),
+          userver::storages::postgres::ClusterHostType::kMaster,
+          {}
+      );
+
+      auto res = transaction.Execute(
+          fmt::format("SELECT c.*, u.username, u.user_avatar FROM {} c\n"
+                      "JOIN users u ON c.user_id = u.user_id\n"
+                      "WHERE tags LIKE '%{}%'", target_table, key_word)
+      );
+      auto iteration = res.AsSetOf<T>(userver::storages::postgres::kRowTag);
+
+      return utils::CreateJsonResult(iteration);
+    }
+
     static std::string CheckAndHash(
         userver::storages::postgres::Transaction &transaction,
-        userver::formats::json::Value& body) ;
+        userver::formats::json::Value& body);
 
    private:
     userver::storages::postgres::ClusterPtr pg_cluster_;

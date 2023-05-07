@@ -62,24 +62,39 @@ components_manager:
       throttling_enabled: false
       url_trailing_slash: strict-match
 
-    handler-user-register:                      # endpoint for user registration
+    handler-user-register:
       path: /api/user/register
       method: POST
       task_processor: main-task-processor
 
-    handler-user-login:                         # endpoint for user login
+    handler-user-login:
       path: /api/user/login
       method: POST
       task_processor: main-task-processor
 
-    handler-project:                            # endpoint to get all projects, create project
+    handler-project:
       path: /api/project
       method: GET,POST
       task_processor: main-task-processor
 
+    handler-project-id:
+      path: /api/project/{project_id}
+      method: GET,PATCH,DELETE
+      task_processor: main-task-processor
+
+    handler-project-comment:
+      path: /api/project/comments
+      method: GET,PATCH,DELETE
+      task_processor: main-task-processor
+
     handler-comment:
       path: /api/comment
-      method: POST
+      method: GET,POST
+      task_processor: main-task-processor
+
+    handler-comment-id:
+      path: /api/comment/{comment_id}
+      method: GET,PATCH,DELETE
       task_processor: main-task-processor
 
     portfolio-db:

@@ -1,5 +1,6 @@
 #include "user.hpp"
 
+// TODO: доделать логику HandleRequestJsonThrow, как в сервисе проекта
 namespace portfolio::user {
   User::User(const userver::components::ComponentConfig &config,
                    const userver::components::ComponentContext &context)
