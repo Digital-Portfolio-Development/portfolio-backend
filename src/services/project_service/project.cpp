@@ -13,7 +13,7 @@ namespace portfolio::project {
       userver::server::request::RequestContext &) const {
     std::string key_word = request.GetArg("key");
     std::string project_id = request.GetPathArg("project_id");
-    std::string comment = request.GetPathArg("comments");
+    std::string comments_project_id = request.GetPathArg("comments_project_id");
 
     if (!key_word.empty()) {
       return SearchAndGetObjects<utils::ProjectTuple>("project", "projects", key_word);
@@ -26,17 +26,29 @@ namespace portfolio::project {
      *
      */
     if (!project_id.empty()) {
-      // TODO: сделать обработку update, delete методов
+
       switch (request.GetMethod()) {
         case userver::server::http::HttpMethod::kGet:
-          return utils::ResponseMessage("Hi from GET project by id");
+          return utils::ResponseMessage("Hi from GET project by id"); // TODO: сделать обработку update, delete методов
 
         default:
           throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
               fmt::format("Unsupported method {}", request.GetMethod())});
       }
-    } else if (!comment.empty()) {
-      // TODO: сделать обработку эндпоинта '/api/project/comments'
+    } else if (!comments_project_id.empty()) {
+      // TODO: сделать обработку эндпоинта '/api/project/comments/{project_id}'
+      switch (request.GetMethod()) {
+        case userver::server::http::HttpMethod::kGet: {
+          std::string error = CheckRequestData(request_json);
+          if (!error.empty()){
+            request.SetResponseStatus(userver::server::http::HttpStatus::kAccepted);
+            return GetComments("project", comments_project_id);
+          }
+        }
+        default:
+          throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
+              fmt::format("Unsupported method {}", request.GetMethod())});
+      }
     } else {
       switch (request.GetMethod()) {
         case userver::server::http::HttpMethod::kPost: {
