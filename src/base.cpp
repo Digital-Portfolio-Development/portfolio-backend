@@ -155,10 +155,10 @@ namespace portfolio::base {
         fmt::format("search_get_{}_transaction", target_type),
         userver::storages::postgres::ClusterHostType::kMaster, {});
     auto result_set = transaction.Execute(
-        fmt::format("SELECT c.*, u.username, u.user_avatar FROM comments c\n"
+        "SELECT c.*, u.username, u.user_avatar FROM comments c\n"
                     "JOIN users u ON c.user_id = u.user_id\n"
-                    "WHERE (c.target_id = {} and c.target_type = '{}')",
-                    std::stoi(target_id.data()), target_type)
+                    "WHERE (c.target_id = $1 and c.target_type = $2)",
+                    std::stoi(target_id.data()), target_type
     );
     auto iter_result_set = result_set.AsSetOf<utils::CommentTuple>(userver::storages::postgres::kRowTag);
     return utils::CreateJsonResult(iter_result_set);
