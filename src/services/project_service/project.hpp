@@ -27,6 +27,9 @@ namespace portfolio::project {
 
     static std::string CheckRequestData(
         const userver::formats::json::Value &request_json);
+
+    userver::formats::json::Value GetProjectByID(
+        std::string_view id) const;
   };
 
   void AppendProject(userver::components::ComponentList &component_list);

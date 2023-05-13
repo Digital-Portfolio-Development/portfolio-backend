@@ -73,7 +73,7 @@ namespace portfolio::base {
         userver::storages::postgres::Transaction &transaction,
         userver::formats::json::Value& body);
 
-   private:
+   protected:
     userver::storages::postgres::ClusterPtr pg_cluster_;
   };
 }

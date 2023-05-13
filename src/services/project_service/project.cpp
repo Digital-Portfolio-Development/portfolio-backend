@@ -25,11 +25,15 @@ namespace portfolio::project {
      * 3) HandleProject
      *
      */
+
+    // TODO: сделать обработку update, delete методов
+
     if (!project_id.empty()) {
 
       switch (request.GetMethod()) {
         case userver::server::http::HttpMethod::kGet:
-          return utils::ResponseMessage("Hi from GET project by id"); // TODO: сделать обработку update, delete методов
+          request.SetResponseStatus(userver::server::http::HttpStatus::kAccepted);
+          return GetProjectByID(project_id);
 
         default:
           throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
@@ -90,6 +94,20 @@ namespace portfolio::project {
     }
 
     return error;
+  }
+
+  userver::formats::json::Value Project::GetProjectByID(std::string_view project_id) const {
+    userver::storages::postgres::Transaction transaction = pg_cluster_->Begin(
+        "search_get_project_transaction",
+        userver::storages::postgres::ClusterHostType::kMaster, {});
+    auto db_result = transaction.Execute(
+        "SELECT p.*, u.username, u.user_avatar FROM projects p\n"
+        "              JOIN users u ON p.user_id = u.user_id\n"
+        "              WHERE (p.project_id = $1)",
+        std::stoi(project_id.data()));
+
+    auto result = db_result.AsSetOf<utils::ProjectTuple>(userver::storages::postgres::kRowTag);
+    return utils::CreateJsonResult(result);
   }
 
   void AppendProject(userver::components::ComponentList &component_list) {
