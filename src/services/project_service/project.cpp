@@ -15,6 +15,7 @@ namespace portfolio::project {
     std::string project_id = request.GetPathArg("project_id");
     std::string comments_project_id = request.GetPathArg("comments_project_id");
 
+    // Поиск проектов по тэгам
     if (!key_word.empty()) {
       return SearchAndGetObjects<utils::ProjectTuple>("project", "projects", key_word);
     }
@@ -28,32 +29,34 @@ namespace portfolio::project {
 
     // TODO: сделать обработку update, delete методов
 
-    if (!project_id.empty()) {
+    // /api/project/{project_id}
+    if (!project_id.empty()) { // Обработка получения проекта по ID
 
-      switch (request.GetMethod()) {
+      switch (request.GetMethod()) { // [GET]
         case userver::server::http::HttpMethod::kGet:
+        {
           request.SetResponseStatus(userver::server::http::HttpStatus::kAccepted);
           return GetProjectByID(project_id);
+        }
 
         default:
           throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
               fmt::format("Unsupported method {}", request.GetMethod())});
       }
-    } else if (!comments_project_id.empty()) {
+
+    // /api/project/comments/{comments_project_id}
+    } else if (!comments_project_id.empty()) { // Обработка получения комментариев под проектом по ID
       switch (request.GetMethod()) {
         case userver::server::http::HttpMethod::kGet: {
-          std::string error = CheckRequestData(request_json);
-          if (!error.empty()){
-            request.SetResponseStatus(userver::server::http::HttpStatus::kAccepted);
-            return GetComments("project", comments_project_id);
-          }
+          request.SetResponseStatus(userver::server::http::HttpStatus::kAccepted);
+          return GetComments("project", comments_project_id);
         }
         default:
           throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
               fmt::format("Unsupported method {}", request.GetMethod())});
       }
     } else {
-      switch (request.GetMethod()) {
+      switch (request.GetMethod()) { // [GET]
         case userver::server::http::HttpMethod::kPost: {
           std::string error = CheckRequestData(request_json);
           if (!error.empty()) {
@@ -98,7 +101,7 @@ namespace portfolio::project {
 
   userver::formats::json::Value Project::GetProjectByID(std::string_view project_id) const {
     userver::storages::postgres::Transaction transaction = pg_cluster_->Begin(
-        "search_get_project_transaction",
+        "get_project_transaction",
         userver::storages::postgres::ClusterHostType::kMaster, {});
     auto db_result = transaction.Execute(
         "SELECT p.*, u.username, u.user_avatar FROM projects p\n"

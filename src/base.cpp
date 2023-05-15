@@ -63,7 +63,7 @@ namespace portfolio::base {
     return utils::ResponseMessage("unknown error");
   }
 
-  userver::formats::json::Value Base::UpdateObject(
+    userver::formats::json::Value Base::UpdateObject(
       const userver::server::http::HttpRequest &request,
       const std::string_view target_type,
       const userver::storages::postgres::Query &update_value) const {
@@ -74,7 +74,7 @@ namespace portfolio::base {
     }
 
     userver::storages::postgres::Transaction transaction = pg_cluster_->Begin(
-        fmt::format("create_{}_transaction", target_type),
+        fmt::format("update_{}_transaction", target_type),
         userver::storages::postgres::ClusterHostType::kMaster,
         {}
     );
