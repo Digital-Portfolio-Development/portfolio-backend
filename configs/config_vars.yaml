@@ -7,3 +7,5 @@ is_testing: false
 server-port: 8080
 
 secdist-path: /usr/local/etc/portfolio/private.json
+
+logging-file-path: /usr/local/etc/portfolio/log.log

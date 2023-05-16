@@ -28,7 +28,7 @@ components_manager:
       fs-task-processor: fs-task-processor
       loggers:
         default:
-          file_path: '@stderr'
+          file_path: $logging-file-path
           level: $logger-level
           overflow_behavior: discard  # Drop logs if the system is too busy to write them down.
 
