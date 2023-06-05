@@ -18,7 +18,7 @@ add_library(${PROJECT_NAME}_objs OBJECT
 	src/services/project_service/project.hpp
 	src/services/comment_service/comment.hpp
 	src/utils/utils.hpp
-)
+        src/services/like_service/like.cpp src/services/like_service/like.hpp)
 target_link_libraries(${PROJECT_NAME}_objs PUBLIC userver-core userver-postgresql)
 
 include_directories(SYSTEM ./third_party/userver)
@@ -42,7 +42,7 @@ add_executable(${PROJECT_NAME}
 	src/services/comment_service/comment.hpp
 	src/utils/validate_request.cpp
 	src/utils/response_message.cpp
-)
+        src/services/like_service/like.cpp src/services/like_service/like.hpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 
 # Functional Tests
