@@ -15,6 +15,7 @@
 #include <userver/server/http/http_request.hpp>
 #include <userver/storages/postgres/component.hpp>
 #include <userver/storages/postgres/cluster.hpp>
+#include <userver/storages/postgres/result_set.hpp>
 #include <userver/storages/postgres/parameter_store.hpp>
 #include <shared/include/userver/crypto/hash.hpp>
 #include <userver/formats/parse/common_containers.hpp>
@@ -40,6 +41,9 @@ namespace portfolio::base {
         std::string_view target,
         std::string_view target_table,
         std::string_view object_id) const;
+
+    userver::storages::postgres::ResultSet GetAllTable(
+        std::string_view target_table) const;
 
     [[nodiscard]] userver::formats::json::Value GetComments(
         std::string_view target_type,

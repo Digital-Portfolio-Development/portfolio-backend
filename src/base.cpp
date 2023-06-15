@@ -147,6 +147,20 @@ namespace portfolio::base {
     return utils::ResponseMessage("unknown error");
   }
 
+  userver::storages::postgres::ResultSet Base::GetAllTable(
+      std::string_view target_table) const {
+    userver::storages::postgres::Transaction transaction = pg_cluster_->Begin(
+        fmt::format("get_{}_table_transaction", target_table),
+        userver::storages::postgres::ClusterHostType::kMaster, {});
+
+    const userver::storages::postgres::Query kGetValue {
+        fmt::format("SELECT * FROM {}", target_table),
+        userver::storages::postgres::Query::Name {"get_table"}
+    };
+    auto result_set = transaction.Execute(kGetValue);
+    return result_set;
+  }
+
   userver::formats::json::Value Base::GetComments(
       const std::string_view target_type,
       const std::string_view target_id

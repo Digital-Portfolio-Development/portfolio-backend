@@ -58,7 +58,12 @@ namespace portfolio::project {
           }
           return CreateObject(request, "project", kInsertValue);
         }
-
+        case userver::server::http::HttpMethod::kGet: {
+          auto allTableResultSet = GetAllTable("projects");
+          auto result = allTableResultSet.AsSetOf<utils::ProjectTuple>(
+              userver::storages::postgres::kRowTag);
+          return utils::CreateJsonResult(result);
+        }
         default:
           throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
               fmt::format("Unsupported method {}", request.GetMethod())});

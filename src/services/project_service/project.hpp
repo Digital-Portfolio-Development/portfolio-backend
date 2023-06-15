@@ -14,9 +14,9 @@ namespace portfolio::project {
     // MUST be at the end of the field list and
     // MUST be marked as DEFAULT in the value list.
     const userver::storages::postgres::Query kInsertValue {
-        "INSERT INTO projects "
-        "(user_id, name, short_description, full_description, tags, priority, visibility)"
-        "VALUES ($1, $2, $3, $4, $5, $6, $7)",
+        "INSERT INTO projects"
+        "(user_id, name, short_description, full_description, tags, priority, visibility, username, user_avatar)"
+        "VALUES ($1, $2, $3, $4, $5, $6, $7, (SELECT username FROM users WHERE user_id = $1), (SELECT avatar FROM users WHERE user_id = $1))",
         userver::storages::postgres::Query::Name {"project_insert_value"}
     };
 
