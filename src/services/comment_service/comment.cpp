@@ -36,6 +36,7 @@ namespace portfolio::comment {
             request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
             return utils::ResponseMessage(error);
           }
+          // int id = stoi(utils::ParseRequestData(request_json, "comment_id"));
           return UpdateObject(request, "comment", kUpdateValue);
         }
         case userver::server::http::HttpMethod::kDelete:

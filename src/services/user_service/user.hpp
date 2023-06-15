@@ -14,10 +14,10 @@ namespace portfolio::user {
         userver::storages::postgres::Query::Name{"user_register_insert_value"},
     };
 
-//    const userver::storages::postgres::Query kUpdateValue {
-//        "UPDATE users SET username = $1 WHERE user_id = $2",
-//        userver::storages::postgres::Query::Name{"user_update_value"},
-//    };
+    const userver::storages::postgres::Query kUpdateValue {
+        "UPDATE users SET name = $2, last_name = $3, username = $4, email = $5, phone_number = $6, password = $7, profession = $8, key_skills = $9, about = $10, country = $11, city = $12, avatar = $13, banner = $14 WHERE user_id = $1",
+        userver::storages::postgres::Query::Name{"user_update_value"},
+    };
 
     userver::formats::json::Value HandleRequestJsonThrow(
         const userver::server::http::HttpRequest &request,

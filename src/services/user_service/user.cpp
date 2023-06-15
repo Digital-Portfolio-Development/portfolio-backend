@@ -26,14 +26,15 @@ namespace portfolio::user {
             userver::storages::postgres::kRowTag);
         return utils::CreateJsonResult(result);
       }
-//      case userver::server::http::HttpMethod::kUpdate: {
-//        std::string error = CheckRequestData(request_json);
-//        if (!error.empty()) {
-//          request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
-//          return utils::ResponseMessage(error);
-//        }
-//        return UpdateObject(request, "user", kInsertValue);
-//      }
+      case userver::server::http::HttpMethod::kPatch: {
+        std::string error = CheckRequestData(request_json);
+        if (!error.empty()) {
+          request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
+          return utils::ResponseMessage(error);
+        }
+        // int id = stoi(utils::ParseRequestData(request_json, "user_id"));
+        return UpdateObject(request, "user", kUpdateValue);
+      }
       default:
         throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
             fmt::format("Unsupported method {}", request.GetMethod())});

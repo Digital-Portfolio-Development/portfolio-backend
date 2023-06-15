@@ -20,11 +20,9 @@ namespace portfolio::comment {
     };
 
     const userver::storages::postgres::Query kUpdateValue {
-        "UPDATE comments "
-        "SET text = $1, media = DEFAULT)"
-        "WHERE comment_id = $2",
+        "UPDATE comments SET text = $2, media = '' WHERE comment_id = $1",
         userver::storages::postgres::Query::Name{"comment_update_value"},
-    };
+    }; // TODO: Add some more fields
 
     userver::formats::json::Value HandleRequestJsonThrow(
         const userver::server::http::HttpRequest &request,
