@@ -19,7 +19,9 @@ namespace portfolio::user {
         }
         return CreateObject(request, "user", kInsertValue);
       }
-
+      case userver::server::http::HttpMethod::kGet: {
+        return
+      }
       default:
         throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
             fmt::format("Unsupported method {}", request.GetMethod())});

@@ -3,7 +3,7 @@
 namespace portfolio::user {
   class User final : public base::Base {
    public:
-    static constexpr std::string_view kName = "handler-user-register";
+    static constexpr std::string_view kName = "handler-user";
 
     User(const userver::components::ComponentConfig &config,
             const userver::components::ComponentContext &context);
