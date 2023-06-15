@@ -3,7 +3,7 @@
 namespace portfolio::user {
   class User final : public base::Base {
    public:
-    static constexpr std::string_view kName = "handler-user-register";
+    static constexpr std::string_view kName = "handler-user";
 
     User(const userver::components::ComponentConfig &config,
             const userver::components::ComponentContext &context);
@@ -13,6 +13,11 @@ namespace portfolio::user {
         "VALUES ($1, $2, $3, $4)",
         userver::storages::postgres::Query::Name{"user_register_insert_value"},
     };
+
+//    const userver::storages::postgres::Query kUpdateValue {
+//        "UPDATE users SET username = $1 WHERE user_id = $2",
+//        userver::storages::postgres::Query::Name{"user_update_value"},
+//    };
 
     userver::formats::json::Value HandleRequestJsonThrow(
         const userver::server::http::HttpRequest &request,

@@ -20,7 +20,20 @@ namespace portfolio::user {
         }
         return CreateObject(request, "user", kInsertValue);
       }
-
+      case userver::server::http::HttpMethod::kGet: {
+        auto allTableResultSet = GetAllTable("users");
+        auto result = allTableResultSet.AsSetOf<utils::UserTuple>(
+            userver::storages::postgres::kRowTag);
+        return utils::CreateJsonResult(result);
+      }
+//      case userver::server::http::HttpMethod::kUpdate: {
+//        std::string error = CheckRequestData(request_json);
+//        if (!error.empty()) {
+//          request.SetResponseStatus(userver::server::http::HttpStatus::kBadRequest);
+//          return utils::ResponseMessage(error);
+//        }
+//        return UpdateObject(request, "user", kInsertValue);
+//      }
       default:
         throw userver::server::handlers::ClientError(userver::server::handlers::ExternalBody{
             fmt::format("Unsupported method {}", request.GetMethod())});
