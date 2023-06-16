@@ -8,14 +8,14 @@
 #include <shared/include/userver/crypto/algorithm.hpp>
 
 namespace portfolio::user {
-  struct UserDbInfo {
+struct UserDbInfo {
     server::auth::UserAuthInfo::Ticket token;
     std::int64_t user_id;
     std::vector<std::string> scopes;
     std::string name;
-  };
+};
 
-  struct AuthCachePolicy {
+struct AuthCachePolicy {
     static constexpr std::string_view kName = "auth-pg-cache";
 
     using ValueType = UserDbInfo;
@@ -30,7 +30,7 @@ namespace portfolio::user {
         std::unordered_map<server::auth::UserAuthInfo::Ticket, UserDbInfo,
                            std::hash<server::auth::UserAuthInfo::Ticket>,
                            crypto::algorithm::StringsEqualConstTimeComparator>;
-  };
+};
 
-  using AuthCache = components::PostgreCache<AuthCachePolicy>;
+using AuthCache = components::PostgreCache<AuthCachePolicy>;
 }  // namespace portfolio::user

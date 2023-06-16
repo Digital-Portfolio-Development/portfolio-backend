@@ -42,6 +42,7 @@ add_executable(${PROJECT_NAME}
 	src/services/comment_service/comment.hpp
 	src/utils/validate_request.cpp
 	src/utils/response_message.cpp
+	src/utils/create_json_result.cpp
 )
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_objs)
 
