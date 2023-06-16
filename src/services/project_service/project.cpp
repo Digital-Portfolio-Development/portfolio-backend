@@ -31,12 +31,28 @@ userver::formats::json::Value Project::HandleRequestJsonThrow(
 
     // /api/project/{project_id}
     if (!project_id.empty()) {  // Обработка получения проекта по ID
-
         switch (request.GetMethod()) {  // [GET]
             case userver::server::http::HttpMethod::kGet: {
                 request.SetResponseStatus(
                     userver::server::http::HttpStatus::kAccepted);
                 return GetProjectByID(project_id);
+            }
+
+            // с фронта должен в body приходить чистый жсон проект с изменениями
+            case userver::server::http::HttpMethod::kPatch:{
+//                const std::string cookie_user_id = request.GetCookie("user_id"); // TODO: осталось понять насколько безопасно
+//                const std::string req_user_id = request_json["user_id"].As<std::string>(); // <--- эта залупа падает здесь
+//                if (cookie_user_id == req_user_id){
+                const userver::storages::postgres::Query kUpdateValue {
+                    "UPDATE projects SET name=$3, short_description=$4, full_description=$5, tags=$6, link=$7, avatar=$8, priority=$9, visibility=$10, views=$11,  updated_at=now()"
+                    " WHERE project_id = $1 and user_id=$2",
+                    userver::storages::postgres::Query::Name{"project_update_value"},
+                };
+                return this->UpdateObject(request, "project",kUpdateValue); // TODO: проверка что юзер владеет этим ID(сейчас любой может поменять любой проект)
+//                } else {
+//                    return utils::ResponseMessage("You can't change someone else project");
+//                }
+
             }
 
             default:
@@ -46,9 +62,8 @@ userver::formats::json::Value Project::HandleRequestJsonThrow(
         }
 
         // /api/project/comments/{comments_project_id}
-    } else if (!comments_project_id
-                    .empty()) {  // Обработка получения комментариев под
-                                 // проектом по ID
+    } else if (!comments_project_id.empty()) {  // Обработка получения комментариев под
+                                                // проектом по ID
         switch (request.GetMethod()) {
             case userver::server::http::HttpMethod::kGet: {
                 request.SetResponseStatus(
